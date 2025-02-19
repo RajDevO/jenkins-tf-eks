@@ -6,7 +6,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Ensure the JAR file is built and located at target/*.jar
-COPY hello-world-app.jar app.jar
+COPY CI/hello-world-app.jar app.jar
 
 # Expose the port your Spring Boot app will run on
 EXPOSE 8090
