@@ -51,7 +51,7 @@
 
     <build>
 
-        <finalName>spring-boot-web</finalName>
+        <finalName>hello-world-app</finalName>
 
         <plugins>
             <plugin>
