@@ -5,13 +5,16 @@ pipeline {
         string(name: 'EKS_CLUSTER_NAME', defaultValue: '', description: 'Enter the name of the EKS cluster')
     }
     
-    environment {
-        AWS_ACCESS_KEY_ID     = credentials('aws-access-key-id')
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
-        AWS_DEFAULT_REGION    = 'ap-south-1'
-    }
-
     stages {
+        stage('Setup AWS Credentials from Vault') {
+            steps {
+                script {
+                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault-token', vaultUrl: 'http://13.56.188.51:8200'], vaultSecrets: [
+                          [path: 'secrets/aws/credentials', secretValues: [[envVar: 'AWS_ACCESS_KEY_ID', vaultKey: 'access_key'], [envVar: 'AWS_SECRET_ACCESS_KEY', vaultKey: 'secret_key']]]
+                    ])
+                }
+            }
+        }
         stage('Git Checkout') {
             steps {
                 script {
