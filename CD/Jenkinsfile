@@ -11,7 +11,7 @@ pipeline {
         stage('Git Checkout') {
             steps {
                 script {
-                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault-token', vaultUrl: 'http://54.215.197.253:8200'], vaultSecrets: [
+                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault-token', vaultUrl: 'http://13.56.188.51:8200'], vaultSecrets: [
                           [path: 'secrets/github', secretValues: [[envVar: 'GITHUB_USER', vaultKey: 'user'], [envVar: 'GITHUB_TOKEN', vaultKey: 'github_token']]]
                     ]) {
                         echo "Cloning the GITHUB Repository"
