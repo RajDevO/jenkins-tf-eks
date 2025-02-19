@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'EKS_CLUSTER_NAME', defaultValue: '', description: 'Enter the name of the EKS cluster')
+        string(name: 'AWS_REGION', choice: ['us-west-1', 'us-west-2', 'eu-west-1'], description: 'Enter the Region of the EKS cluster')
+    }
+    
     stages {
         stage('Clean Workspace') {
             steps {
@@ -26,7 +31,7 @@ pipeline {
         stage('Deploy the app on EKS') {
             steps {
                 script {
-                        sh ('aws eks update-kubeconfig --name project-eks --region us-west-1')
+                        sh ('aws eks update-kubeconfig --name ${params.EKS_CLUSTER_NAME} --region ${params.AWS_REGION}')
                         sh "kubectl create project-55"
                         sh "kubectl get ns"
                         sh "helm install $BUILD_NUMBER ./v55app-chart -n project-55"
