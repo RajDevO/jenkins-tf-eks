@@ -29,7 +29,7 @@ pipeline {
                         sh ('aws eks update-kubeconfig --name project-eks --region us-west-1')
                         sh "kubectl create project-55"
                         sh "kubectl get ns"
-                        sh "kubectl apply -f nodejsapp.yaml -n project-55"
+                        sh "helm install fiftyfive ./v55app-chart -n project-55"
                     }
                 }
             }
