@@ -16,7 +16,7 @@ pipeline {
                     ]) {
                         echo "Cloning the GITHUB Repository"
                         sh """
-                        git clone https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/RajDevO/project55.git
+                        git clone https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/RajDevO/jenkins-tf-eks.git
                         """
                     }
                 }
@@ -27,8 +27,9 @@ pipeline {
             steps {
                 script {
                         sh ('aws eks update-kubeconfig --name project-eks --region us-west-1')
+                        sh "kubectl create project-55"
                         sh "kubectl get ns"
-                        sh "kubectl apply -f nodejsapp.yaml"
+                        sh "kubectl apply -f nodejsapp.yaml -n project-55"
                     }
                 }
             }
