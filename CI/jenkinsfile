@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Git Checkout') {
+            steps {
+                script {
+                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault-token', vaultUrl: 'http://54.215.197.253:8200'], vaultSecrets: [
+                          [path: 'secrets/github', secretValues: [[envVar: 'GITHUB_USER', vaultKey: 'user'], [envVar: 'GITHUB_TOKEN', vaultKey: 'github_token']]]
+                    ]) {
+                        echo "Cloning the GITHUB Repository"
+                        sh """
+                        git clone https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/RajDevO/project55.git
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Build JAR') {
+            steps {
+                dir("${WORKSPACE}/project55/Project55/CI") {
+                    sh 'mvn clean install'
+                }
+            }
+        }
+
+        stage('Docker Build & Push Image') {
+            steps {
+                script {
+                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault-token', vaultUrl: 'http://54.215.197.253:8200'], vaultSecrets: [
+                          [path: 'secrets/dockerhub', secretValues: [[envVar: 'DOCKER_USERNAME', vaultKey: 'username'], [envVar: 'DOCKER_PASSWORD', vaultKey: 'password']]]
+                    ]) {
+                        sh """
+                        mv ${WORKSPACE}/project55/Project55/CI/target/*.jar ${WORKSPACE}/project55/Project55/CI
+                        docker buildx build --no-cache -f ${WORKSPACE}/project55/Project55/CI/Dockerfile -t ${DOCKER_USERNAME}/v55-app:$BUILD_NUMBER .
+                        echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
+                        docker push ${DOCKER_USERNAME}/v55-app:$BUILD_NUMBER
+                        """
+                    }
+                }
+            }
+        }
+    }
+}

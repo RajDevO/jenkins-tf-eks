@@ -1,0 +1,37 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Git Checkout') {
+            steps {
+                script {
+                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault-token', vaultUrl: 'http://54.215.197.253:8200'], vaultSecrets: [
+                          [path: 'secrets/github', secretValues: [[envVar: 'GITHUB_USER', vaultKey: 'user'], [envVar: 'GITHUB_TOKEN', vaultKey: 'github_token']]]
+                    ]) {
+                        echo "Cloning the GITHUB Repository"
+                        sh """
+                        git clone https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/RajDevO/project55.git
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Deploy the app on EKS') {
+            steps {
+                script {
+                        sh ('aws eks update-kubeconfig --name project-eks --region us-west-1')
+                        sh "kubectl get ns"
+                        sh "kubectl apply -f nodejsapp.yaml"
+                    }
+                }
+            }
+        }
+    }
+}
