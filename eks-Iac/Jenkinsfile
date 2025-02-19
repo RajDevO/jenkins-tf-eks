@@ -5,9 +5,9 @@ pipeline {
         string(name: 'EKS_CLUSTER_NAME', defaultvalue: '' description: 'Enter the name of EKS cluster :-') 
     }
 
-    environment{
+   /* environment{
         cluster_name = ${params.EKS_CLUSTER_NAME} 
-    }
+    } */
     stage('Git Checkout') {
             steps {
                 script {
@@ -34,7 +34,7 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 script {
-                    sh 'terraform plan'
+                    sh 'terraform plan -var cluster_name=${params.EKS_CLUSTER_NAME}'
                 }
             }
         }
@@ -42,7 +42,7 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 script {
-                    sh 'terraform apply -auto-approve'
+                    sh 'terraform apply -auto-approve -var cluster_name=${params.EKS_CLUSTER_NAME}'
                 }
             }
         }
