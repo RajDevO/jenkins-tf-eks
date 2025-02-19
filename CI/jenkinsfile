@@ -39,6 +39,8 @@ pipeline {
                     ]) {
                         sh """
                         mv ${WORKSPACE}/jenkins-tf-eks/CI/target/hello-world-app.jar ${WORKSPACE}/jenkins-tf-eks/CI
+                        cd ${WORKSPACE}/jenkins-tf-eks/CI/target
+                        ls -la
                         docker build -f ${WORKSPACE}/jenkins-tf-eks/CI/Dockerfile -t ${DOCKER_USERNAME}/v55-app:latest .
                         echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
                         docker push ${DOCKER_USERNAME}/v55-app:latest
