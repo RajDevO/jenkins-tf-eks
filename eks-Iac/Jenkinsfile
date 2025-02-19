@@ -1,0 +1,65 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'EKS_CLUSTER_NAME', defaultvalue: '' description: 'Enter the name of EKS cluster :-') 
+    }
+
+    environment{
+        cluster_name = ${params.EKS_CLUSTER_NAME} 
+    }
+    stage('Git Checkout') {
+            steps {
+                script {
+                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault-token', vaultUrl: 'http://13.56.188.51:8200'], vaultSecrets: [
+                          [path: 'secrets/github', secretValues: [[envVar: 'GITHUB_USER', vaultKey: 'user'], [envVar: 'GITHUB_TOKEN', vaultKey: 'github_token']]]
+                    ]) {
+                        echo "Cloning the GITHUB Repository"
+                        sh """
+                        git clone https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/RajDevO/jenkins-tf-eks.git
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                script {
+                    sh 'terraform init'
+                }
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                script {
+                    sh 'terraform plan'
+                }
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                script {
+                    sh 'terraform apply -auto-approve'
+                }
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                script {
+                    sh 'terraform state list'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up the working directory after execution (Optional)
+            cleanWs()
+        }
+    }
+}
