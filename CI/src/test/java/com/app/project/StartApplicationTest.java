@@ -1,4 +1,4 @@
-package com.devops.coach;
+package com.app.project;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,6 @@ public class StartApplicationTest {
         mockMvc.perform(get("/"))
             .andExpect(status().isOk())
             .andExpect(view().name("index"))
-            .andExpect(model().attribute("msg", "Hello All..We are deploying springboot application into EKS cluster using Helm + Jenkins Pipeline!!!!"));
+            .andExpect(model().attribute("msg", "Hello World!!!!"));
     }
 }
