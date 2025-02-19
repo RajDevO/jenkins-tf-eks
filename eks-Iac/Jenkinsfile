@@ -24,7 +24,7 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 script {
-                    dir('jenkins-tf-eks') {
+                    dir("${WORKSPACE}/jenkins-tf-eks/eks-Iac") {
                         sh 'terraform init'
                     }
                 }
@@ -34,7 +34,7 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 script {
-                    dir('jenkins-tf-eks') {
+                    dir("${WORKSPACE}/jenkins-tf-eks/eks-Iac") {
                         sh "terraform plan -var cluster_name=${params.EKS_CLUSTER_NAME}"
                     }
                 }
@@ -44,7 +44,7 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 script {
-                    dir('jenkins-tf-eks') {
+                    dir("${WORKSPACE}/jenkins-tf-eks/eks-Iac") {
                         sh "terraform apply -auto-approve -var cluster_name=${params.EKS_CLUSTER_NAME}"
                     }
                 }
@@ -54,7 +54,7 @@ pipeline {
         stage('Cleanup') {
             steps {
                 script {
-                    dir('jenkins-tf-eks') {
+                    dir("${WORKSPACE}/jenkins-tf-eks/eks-Iac") {
                         sh 'terraform state list'
                     }
                 }
