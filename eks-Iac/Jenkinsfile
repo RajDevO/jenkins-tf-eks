@@ -10,7 +10,7 @@ pipeline {
             steps {
                 script {
                     withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault-token', vaultUrl: 'http://13.56.188.51:8200'], vaultSecrets: [
-                          [path: 'secrets/aws/credentials', secretValues: [[envVar: 'AWS_ACCESS_KEY_ID', vaultKey: 'access_key'], [envVar: 'AWS_SECRET_ACCESS_KEY', vaultKey: 'secret_key']]]
+                          [path: 'aws/credentials', secretValues: [[envVar: 'AWS_ACCESS_KEY_ID', vaultKey: 'access_key'], [envVar: 'AWS_SECRET_ACCESS_KEY', vaultKey: 'secret_key']]]
                     ]){
                         echo "AWS ENV SET"
                     }
