@@ -39,9 +39,9 @@ pipeline {
                     ]) {
                         sh """
                         mv ${WORKSPACE}/project55/Project55/CI/target/*.jar ${WORKSPACE}/project55/Project55/CI
-                        docker buildx build --no-cache -f ${WORKSPACE}/project55/Project55/CI/Dockerfile -t ${DOCKER_USERNAME}/v55-app:$BUILD_NUMBER .
+                        docker buildx build --no-cache -f ${WORKSPACE}/project55/Project55/CI/Dockerfile -t ${DOCKER_USERNAME}/v55-app:latest .
                         echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
-                        docker push ${DOCKER_USERNAME}/v55-app:$BUILD_NUMBER
+                        docker push ${DOCKER_USERNAME}/v55-app:latest
                         """
                     }
                 }
