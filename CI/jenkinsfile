@@ -39,7 +39,7 @@ pipeline {
                     ]) {
                         sh """
                         mv ${WORKSPACE}/jenkins-tf-eks/CI/target/*.jar ${WORKSPACE}/jenkins-tf-eks/CI
-                        docker build -f ${WORKSPACE}/jenkins-tf-eks/CI/Dockerfile -t ${DOCKER_USERNAME}/v55-app:latest .
+                        docker buildx build -f ${WORKSPACE}/jenkins-tf-eks/CI/Dockerfile -t ${DOCKER_USERNAME}/v55-app:latest .
                         echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
                         docker push ${DOCKER_USERNAME}/v55-app:latest
                         """
