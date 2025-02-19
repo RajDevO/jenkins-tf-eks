@@ -38,7 +38,7 @@ pipeline {
                           [path: 'secrets/dockerhub', secretValues: [[envVar: 'DOCKER_USERNAME', vaultKey: 'username'], [envVar: 'DOCKER_PASSWORD', vaultKey: 'password']]]
                     ]) {
                         sh """
-                        mv ${WORKSPACE}/jenkins-tf-eks/CI/hello-world-app.jar ${WORKSPACE}/jenkins-tf-eks/CI
+                        mv ${WORKSPACE}/jenkins-tf-eks/CI/target/hello-world-app.jar ${WORKSPACE}/jenkins-tf-eks/CI
                         cd ${WORKSPACE}/jenkins-tf-eks/CI/
                         ls -la
                         docker build -f ${WORKSPACE}/jenkins-tf-eks/CI/Dockerfile -t ${DOCKER_USERNAME}/v55-app:latest .
