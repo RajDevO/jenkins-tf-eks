@@ -33,7 +33,7 @@ pipeline {
                 script {
                         sh """
                           aws eks update-kubeconfig --name ${params.EKS_CLUSTER_NAME} --region ${params.AWS_REGION}
-                          kubectl create project-55
+                          kubectl create -n project-55
                           kubectl get ns
                           helm install ${BUILD_NUMBER} ./v55app-chart -n project-55
                         """
