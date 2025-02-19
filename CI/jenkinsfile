@@ -39,6 +39,7 @@ pipeline {
                     ]) {
                         sh """
                         mv ${WORKSPACE}/jenkins-tf-eks/CI/target/hello-world-app.jar ${WORKSPACE}/jenkins-tf-eks/CI
+                        sudo chown jenkins:docker hello-world-app.jar
                         cd ${WORKSPACE}/jenkins-tf-eks/CI/
                         ls -la
                         docker build -f ${WORKSPACE}/jenkins-tf-eks/CI/Dockerfile -t ${DOCKER_USERNAME}/v55-app:latest .
