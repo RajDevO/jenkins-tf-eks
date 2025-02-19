@@ -17,7 +17,7 @@ pipeline {
                           [path: 'aws/credentials', secretValues: [[envVar: 'AWS_ACCESS_KEY_ID', vaultKey: 'access_key'], [envVar: 'AWS_SECRET_ACCESS_KEY', vaultKey: 'secret_key']]]
                     ]){
                         echo "AWS ENV SET"
-                        sh 'aws sts get-call-identity'
+                        sh 'aws sts get-caller-identity'
                     }
                 }
             }
@@ -32,7 +32,7 @@ pipeline {
                         echo "Cloning the GitHub Repository"
                         sh """
                         git clone https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/RajDevO/jenkins-tf-eks.git
-                        aws sts get-call-identity
+                        aws aws sts get-caller-identity
                         """
                     }
                 }
@@ -43,7 +43,7 @@ pipeline {
             steps {
                 script {
                     dir("${WORKSPACE}/jenkins-tf-eks/eks-Iac") {
-                        sh 'aws sts get-call-identity'
+                        sh 'aws sts get-caller-identity'
                         sh 'terraform init'
                     }
                 }
