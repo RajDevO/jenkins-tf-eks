@@ -32,7 +32,7 @@ pipeline {
                         echo "Cloning the GitHub Repository"
                         sh """
                         git clone https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/RajDevO/jenkins-tf-eks.git
-                        aws aws sts get-caller-identity
+                        aws sts get-caller-identity
                         """
                     }
                 }
