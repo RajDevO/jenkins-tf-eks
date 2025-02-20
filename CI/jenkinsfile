@@ -39,6 +39,8 @@ pipeline {
                           [path: 'secrets/dockerhub', secretValues: [[envVar: 'DOCKER_USERNAME', vaultKey: 'username'], [envVar: 'DOCKER_PASSWORD', vaultKey: 'password']]]
                     ]) {
                         sh """
+                        pwd
+                        ls -al
                         docker buildx build -t ${DOCKER_USERNAME}/v55-app:latest .
                         echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
                         docker push ${DOCKER_USERNAME}/v55-app:latest
