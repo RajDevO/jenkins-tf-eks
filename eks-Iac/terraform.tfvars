@@ -1,4 +1,4 @@
-region              = "us-west-1"
+/*region              = "us-west-1"*/
 environment         = "test"
 /* cluster_name        = "project-eks" */
 vpc_cidr_block      = "10.0.0.0/16"
