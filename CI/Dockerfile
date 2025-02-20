@@ -1,19 +1,14 @@
-FROM openjdk:17-jdk-slim
+# For Java 11, try this
+FROM adoptopenjdk/openjdk11:alpine-jre
 
-#ARG JAR_FILE=target/*.jar
+# Refer to Maven build -> finalName
+ARG JAR_FILE=target/spring-boot-web.jar
 
-# Set the working directory in the container
-WORKDIR /app
+# cd /opt/app
+WORKDIR /opt/app
 
-# Ensure the JAR file is built and located at target/*.jar
-COPY hello-world-app.jar app.jar 
+# cp target/spring-boot-web.jar /opt/app/app.jar
+COPY ${JAR_FILE} spring-boot-web.jar
 
-# Expose the port your Spring Boot app will run on
-EXPOSE 8090
-
-# Run the Spring Boot application
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
-
-## sudo docker run -p 8080:8080 -t docker-spring-boot:1.0
-## sudo docker run -p 80:8080 -t docker-spring-boot:1.0
-## sudo docker run -p 443:8443 -t docker-spring-boot:1.0
+# java -jar /opt/app/app.jar
+ENTRYPOINT ["java","-jar","spring-boot-web.jar"]
