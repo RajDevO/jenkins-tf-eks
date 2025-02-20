@@ -6,12 +6,12 @@ pipeline {
         choice(name: 'AWS_REGION', choices: ['us-west-1', 'us-west-2', 'eu-west-1'], description: 'Enter the Region of the EKS cluster')
     }
     
-    stages {
+  /*  stages {
         stage('Clean Workspace') {
             steps {
                 cleanWs()
             }
-        }
+        }*/
 
         stage('Git Checkout') {
             steps {
