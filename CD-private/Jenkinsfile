@@ -34,7 +34,7 @@ pipeline {
                         sh """
                           aws eks update-kubeconfig --name ${params.EKS_CLUSTER_NAME} --region ${params.AWS_REGION}
                           kubectl get ns
-                          helm install v${BUILD_NUMBER}v55-chart --namespace project-55
+                          helm upgrade first --install v55-chart --namespace helm-deployment
                         """
                     }
                 }
