@@ -3,7 +3,7 @@ pipeline {
 
     parameters {
         string(name: 'EKS_CLUSTER_NAME', defaultValue: '', description: 'Enter the name of the EKS cluster')
-        choice(name: 'REGION', choices: ['us-west-1', 'us-west-2'], description: 'Select the AWS REGION where you want to create EKS CLuster')
+        /*choice(name: 'REGION', choices: ['us-west-1', 'us-west-2'], description: 'Select the AWS REGION where you want to create EKS CLuster') */
         choice(name: 'ACTION', choices: ['Create', 'Destroy'], description: 'Select whether to apply or destroy resources')       
     }
     
@@ -56,10 +56,10 @@ pipeline {
                 script {
                     if (params.ACTION == 'Create') {
                         echo "Creating EKS Cluster..."
-                        sh "terraform apply -auto-approve -var cluster_name=${params.EKS_CLUSTER_NAME} -var region=${params.REGION}"
+                        sh "terraform apply -auto-approve -var cluster_name=${params.EKS_CLUSTER_NAME}"
                     } else if (params.ACTION == 'Destroy') {
                         echo "Destroying EKS Cluster.."
-                        sh "terraform destroy -auto-approve -var cluster_name=${params.EKS_CLUSTER_NAME} -var region=${params.REGION}"
+                        sh "terraform destroy -auto-approve -var cluster_name=${params.EKS_CLUSTER_NAME}"
                     }
                 }
             }
