@@ -41,7 +41,7 @@ pipeline {
                         sh """
                         sudo su - jenkins
                         mv ${WORKSPACE}/jenkins-tf-eks/CI/target/hello-world-app.jar ${WORKSPACE}/jenkins-tf-eks/CI
-                        docker buildx build -f ${WORKSPACE}/CI/Dockerfile -t ${DOCKER_USERNAME}/v55-public:latest .
+                        docker buildx build -f ${WORKSPACE}/jenkins-tf-eks/CI/Dockerfile -t ${DOCKER_USERNAME}/v55-public:latest .
                         echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
                         docker push ${DOCKER_USERNAME}/v55-public:latest
                         """
