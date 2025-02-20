@@ -9,7 +9,7 @@ pipeline {
         stage('Setup AWS Credentials from Vault') {
             steps {
                 script {
-                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault-token', vaultUrl: 'http://13.56.188.51:8200'], vaultSecrets: [
+                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault-token', vaultUrl: 'http://http://54.219.228.70:8200'], vaultSecrets: [
                           [path: 'aws/credentials', secretValues: [[envVar: 'AWS_ACCESS_KEY_ID', vaultKey: 'access_key'], [envVar: 'AWS_SECRET_ACCESS_KEY', vaultKey: 'secret_key']]]
                     ]){
                         echo "AWS ENV SET"
