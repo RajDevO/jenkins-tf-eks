@@ -34,6 +34,9 @@ pipeline {
                         sh """
                           aws eks update-kubeconfig --name ${params.EKS_CLUSTER_NAME} --region ${params.AWS_REGION}
                           kubectl get ns
+                          pwd 
+                          ls -l
+                          sleep 600
                           helm upgrade hello-app ./v55-chart --install --namespace project-55
                         """
                     }
