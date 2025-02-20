@@ -41,6 +41,7 @@ pipeline {
                         sh """
                         pwd
                         ls -al
+                        cd /var/lib/jenkins/workspace/project-ci/CI
                         docker buildx build -t ${DOCKER_USERNAME}/v55-app:latest .
                         echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
                         docker push ${DOCKER_USERNAME}/v55-app:latest
