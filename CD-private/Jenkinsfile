@@ -36,7 +36,7 @@ pipeline {
                           kubectl get ns
                           pwd 
                           ls -l
-                          sleep 600
+                          cd ${WORKSPACE}/jenkins-tf-eks/CD-private/
                           helm upgrade hello-app ./v55-chart --install --namespace project-55
                         """
                     }
