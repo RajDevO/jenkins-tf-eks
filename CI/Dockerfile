@@ -6,13 +6,13 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Ensure the JAR file is built and located at target/*.jar
-COPY *.jar hello-world-app.jar
+COPY hello-world-app.jar app.jar 
 
 # Expose the port your Spring Boot app will run on
 EXPOSE 8090
 
 # Run the Spring Boot application
-ENTRYPOINT ["java", "-jar", "/app/hello-world-app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
 
 ## sudo docker run -p 8080:8080 -t docker-spring-boot:1.0
 ## sudo docker run -p 80:8080 -t docker-spring-boot:1.0
