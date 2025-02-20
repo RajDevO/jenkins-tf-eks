@@ -5,20 +5,7 @@ pipeline {
         string(name: 'EKS_CLUSTER_NAME', defaultValue: '', description: 'Enter the name of the EKS cluster')
     }
     
-    stages {
-        stage('Setup AWS Credentials from Vault') {
-            steps {
-                script {
-                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault-token', vaultUrl: 'http://http://54.219.228.70:8200'], vaultSecrets: [
-                          [path: 'aws/credentials', secretValues: [[envVar: 'AWS_ACCESS_KEY_ID', vaultKey: 'access_key'], [envVar: 'AWS_SECRET_ACCESS_KEY', vaultKey: 'secret_key']]]
-                    ]){
-                        echo "AWS ENV SET"
-                        sh 'aws sts get-caller-identity'
-                    }
-                }
-            }
-        }
-        
+    stages {      
         stage('Git Checkout') {
             steps {
                 script {
