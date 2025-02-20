@@ -18,7 +18,6 @@ pipeline {
                         echo "Cloning the GitHub Repository"
                         sh """
                         git clone https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/RajDevO/jenkins-tf-eks.git
-                        aws sts get-caller-identity
                         """
                     }
                 }
@@ -29,7 +28,6 @@ pipeline {
             steps {
                 script {
                     dir("${WORKSPACE}/jenkins-tf-eks/eks-Iac") {
-                        sh 'aws sts get-caller-identity'
                         sh 'terraform init'
                     }
                 }
