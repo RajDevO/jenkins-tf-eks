@@ -3,7 +3,7 @@ pipeline {
 
     parameters {
         string(name: 'EKS_CLUSTER_NAME', defaultValue: '', description: 'Enter the name of the EKS cluster')
-        /*choice(name: 'REGION', choices: ['us-west-1', 'us-west-2'], description: 'Select the AWS REGION where you want to create EKS CLuster') */
+        choice(name: 'REGION', choices: ['us-west-1', 'us-west-2'], description: 'Select the AWS REGION where you want to create EKS CLuster') 
         choice(name: 'ACTION', choices: ['Create', 'Destroy'], description: 'Select whether to apply or destroy resources')       
     }
     
@@ -40,30 +40,57 @@ pipeline {
             }
         }
 
-        stage('Terraform Plan') {
+        stage('Plan Terraform Resources') {
             steps {
                 script {
-                    dir("${WORKSPACE}/jenkins-tf-eks/eks-Iac") {
-                        sh "terraform plan -out=tfplan -var cluster_name=${params.EKS_CLUSTER_NAME}"
-                        sh 'terraform show -no-color tfplan > tfplan.txt'
+                    echo "Generating Terraform execution plan for cluster: ${params.EKS_CLUSTER_NAME} in region: ${params.REGION}..."
+                    // Generate Terraform execution plan and save it to a plan file
+                    sh """
+                    terraform plan \
+                        -out=tfplan \
+                        -var cluster_name=${params.EKS_CLUSTER_NAME} \
+                        -var region=${params.REGION}
+                    """
+                }
+            }
+        }
+
+        stage('Plan Destroy Resources') {
+            when {
+                expression { params.ACTION == 'Destroy' }
+            }
+            steps {
+                script {
+                    echo "Generating Terraform destroy plan for cluster: ${params.EKS_CLUSTER_NAME} in region: ${params.REGION}..."
+                    // Generate a destroy plan to see what resources will be destroyed
+                    sh """
+                    terraform plan -destroy \
+                        -out=tfplan_destroy \
+                        -var cluster_name=${params.EKS_CLUSTER_NAME} \
+                        -var region=${params.REGION}
+                    """
+                    // Show the output of the destroy plan
+                    sh 'terraform show tfplan_destroy'
+                }
+            }
+        }
+
+        stage('Apply or Destroy Resources') {
+            steps {
+                script {
+                    if (params.ACTION == 'Apply') {
+                        echo "Applying Terraform plan..."
+                        // Apply the saved Terraform plan file
+                        sh 'terraform apply -auto-approve tfplan'
+                    } else if (params.ACTION == 'Destroy') {
+                        echo "Destroying Terraform resources..."
+                        // Apply the saved destroy plan file
+                        sh 'terraform destroy -auto-approve tfplan_destroy'
                     }
                 }
             }
         }
 
-       stage('Apply or Destroy Resources') {
-            steps {
-                script {
-                    if (params.ACTION == 'Create') {
-                        echo "Creating EKS Cluster..."
-                        sh "terraform apply -auto-approve -var cluster_name=${params.EKS_CLUSTER_NAME}"
-                    } else if (params.ACTION == 'Destroy') {
-                        echo "Destroying EKS Cluster.."
-                        sh "terraform destroy -auto-approve -var cluster_name=${params.EKS_CLUSTER_NAME}"
-                    }
-                }
-            }
-        }
         stage('State list') {
             steps {
                 script {
