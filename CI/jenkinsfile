@@ -34,11 +34,11 @@ pipeline {
 
         stage('Docker Build & Push Image') {
             steps {
+                dir("${WORKSPACE}/jenkins-tf-eks/CI") 
                 script {
                     withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault-token', vaultUrl: 'http://54.219.228.70:8200'], vaultSecrets: [
                           [path: 'secrets/dockerhub', secretValues: [[envVar: 'DOCKER_USERNAME', vaultKey: 'username'], [envVar: 'DOCKER_PASSWORD', vaultKey: 'password']]]
-                    ]) 
-                    dir("${WORKSPACE}/jenkins-tf-eks/CI") {
+                    ]) {
                         sh """
                         docker buildx build -t ${DOCKER_USERNAME}/v55-app:latest .
                         echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
