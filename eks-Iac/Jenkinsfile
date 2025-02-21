@@ -34,10 +34,11 @@ pipeline {
         stage('Validating Terraform'){
             steps{
                 script{
-                    dir('EKS'){
+                    dir('${WORKSPACE}/jenkins-tf-eks/create_cluster/'){
                         sh """
-                         terraform validate
-                         """
+                        pwd
+                        terraform validate
+                        """
                     }
                 }
             }
