@@ -26,20 +26,18 @@ pipeline {
 
        stage('Terraform init') {
             steps {
-                sh 'terraform init'
-            }
-        }
-        stage('Plan') {
-            steps {
-                sh 'terraform plan -out tfplan'
-                sh 'terraform show -no-color tfplan > tfplan.txt'
+                sh """
+                    terraform init
+                """
             }
         }
         stage('Validating Terraform'){
             steps{
                 script{
                     dir('EKS'){
-                         sh 'terraform validate'
+                        sh """
+                         terraform validate
+                         """
                     }
                 }
             }
@@ -48,8 +46,10 @@ pipeline {
             steps{
                 script{
                     dir('EKS'){
-                         sh 'terraform plan'
-                         sh 'terraform show -no-color tfplan > tfplan.txt'
+                        sh """
+                         terraform plan
+                         terraform show -no-color tfplan > tfplan.txt
+                         """
                     }
                     input(message: "Are you sure to proceed?", ok: "proceed")
                 }
@@ -59,7 +59,9 @@ pipeline {
             steps{
                 script{
                     dir('EKS'){
-                         sh 'terraform $action --auto-approve'
+                        sh """
+                        terraform $action --auto-approve -var "cluster_name=${cluster_name}" -var "region=${region}"
+                        """
                     }
                 }
             }
