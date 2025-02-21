@@ -4,7 +4,7 @@ pipeline {
     parameters {
         /*string(name: 'EKS_CLUSTER_NAME', defaultValue: '', description: 'Enter the name of the EKS cluster')*/
         /*choice(name: 'REGION', choices: ['us-west-1', 'us-west-2'], description: 'Select the AWS REGION where you want to create EKS Cluster')*/
-        choice(name: 'ACTION', choices: ['create', 'destroy'], description: 'Select whether to apply or destroy resources')       
+        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Select whether to apply or destroy resources')       
     }
 
     environment {
