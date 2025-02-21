@@ -37,6 +37,7 @@ pipeline {
                           pwd 
                           ls -l
                           cd ${WORKSPACE}/jenkins-tf-eks/CD-vault/
+                          helm lint vaultapp-chart
                           helm upgrade hello-app-vault ./vaultapp-chart --install --namespace project-55-vault
                         """
                     }
