@@ -38,7 +38,7 @@ pipeline {
         stage('Validating Terraform') {
             steps {
                 script {
-                    dir("${WORKSPACE}/jenkins-tf-eks/") {
+                    dir("${WORKSPACE}/jenkins-tf-eks/eks-Iac/") {
                         sh """
                         pwd
                         ls -l
@@ -52,7 +52,7 @@ pipeline {
         stage('Terraform Validate') {
             steps {
                 script {
-                    dir("${WORKSPACE}/jenkins-tf-eks/") {
+                    dir("${WORKSPACE}/jenkins-tf-eks/eks-Iac/") {
                         sh """
                         terraform validate
                         """
@@ -64,7 +64,7 @@ pipeline {
         stage('Previewing the infrastructure') {
             steps {
                 script {
-                    dir("${WORKSPACE}/jenkins-tf-eks/create_cluster/") {
+                    dir("${WORKSPACE}/jenkins-tf-eks/eks-Iac/") {
                         sh """
                         terraform plan -out=tfplan
                         terraform show -no-color tfplan > tfplan.txt
@@ -78,7 +78,7 @@ pipeline {
         stage('Creating/Destroying an EKS cluster') {
             steps {
                 script {
-                    dir("${WORKSPACE}/jenkins-tf-eks/create_cluster/") {
+                    dir("${WORKSPACE}/jenkins-tf-eks/eks-Iac/") {
                         sh """
                         terraform ${action} --auto-approve -var "cluster_name=${cluster_name}" -var "region=${region}"
                         """
