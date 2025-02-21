@@ -1,8 +1,12 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'EKS_CLUSTER_NAME', defaultValue: '', description: 'Enter the name of the EKS cluster')
+        choice(name: 'AWS_REGION', choices: ['us-west-1', 'us-west-2', 'eu-west-1'], description: 'Enter the Region of the EKS cluster')
+    }
+    
     stages {
-
         stage('Clean Workspace') {
             steps {
                 cleanWs()
@@ -24,30 +28,19 @@ pipeline {
             }
         }
 
-        stage('Build JAR') {
+        stage('Deploy the app on EKS') {
             steps {
-                dir("${WORKSPACE}/jenkins-tf-eks/CD-vault") {
-                    sh 'mvn clean install'
-                }
-            }
-        }
-
-        stage('Docker Build & Push Image') {
-            steps {
-                dir("${WORKSPACE}/jenkins-tf-eks/CD-vault") {
                 script {
-                    withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault-token', vaultUrl: 'http://54.219.228.70:8200'], vaultSecrets: [
-                          [path: 'secrets/dockerhub', secretValues: [[envVar: 'DOCKER_USERNAME', vaultKey: 'username'], [envVar: 'DOCKER_PASSWORD', vaultKey: 'password']]]
-                    ]) {
                         sh """
-                        docker buildx build -t ${DOCKER_USERNAME}/v55-app:latest .
-                        echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
-                        docker push ${DOCKER_USERNAME}/v55-app:latest
+                          aws eks update-kubeconfig --name ${params.EKS_CLUSTER_NAME} --region ${params.AWS_REGION}
+                          kubectl get ns
+                          pwd 
+                          ls -l
+                          cd ${WORKSPACE}/jenkins-tf-eks/CD-vault/
+                          helm upgrade hello-app ./v55-chart --install --namespace project-55-vault
                         """
-                        }
                     }
                 }
             }
         }
     }
-}
