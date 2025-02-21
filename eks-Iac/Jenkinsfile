@@ -3,22 +3,28 @@ pipeline {
 
     parameters {
         string(name: 'EKS_CLUSTER_NAME', defaultValue: '', description: 'Enter the name of the EKS cluster')
-        choice(name: 'REGION', choices: ['us-west-1', 'us-west-2'], description: 'Select the AWS REGION where you want to create EKS CLuster')
+        choice(name: 'REGION', choices: ['us-west-1', 'us-west-2'], description: 'Select the AWS REGION where you want to create EKS Cluster')
         choice(name: 'ACTION', choices: ['Create', 'Destroy'], description: 'Select whether to apply or destroy resources')       
     }
-    
-    
+
+    environment {
+        cluster_name = "${params.EKS_CLUSTER_NAME}"
+        region = "${params.REGION}"
+        action = "${params.ACTION.toLowerCase()}"
+    }
+
     stages {   
         stage('Clean Workspace') {
             steps {
                 cleanWs()
             }
         }
+
         stage('Git Checkout') {
             steps {
                 script {
                     withVault(configuration: [disableChildPoliciesOverride: false, timeout: 60, vaultCredentialId: 'vault-token', vaultUrl: 'http://54.219.228.70:8200'], vaultSecrets: [
-                          [path: 'secrets/github', secretValues: [[envVar: 'GITHUB_USER', vaultKey: 'user'], [envVar: 'GITHUB_TOKEN', vaultKey: 'github_token']]]
+                        [path: 'secrets/github', secretValues: [[envVar: 'GITHUB_USER', vaultKey: 'user'], [envVar: 'GITHUB_TOKEN', vaultKey: 'github_token']]]
                     ]) {
                         echo "Cloning the GitHub Repository"
                         sh """
@@ -29,10 +35,10 @@ pipeline {
             }
         }
 
-        stage('Validating Terraform'){
-            steps{
-                script{
-                    dir('${WORKSPACE}/jenkins-tf-eks/create_cluster/'){
+        stage('Validating Terraform') {
+            steps {
+                script {
+                    dir("${WORKSPACE}/jenkins-tf-eks/create_cluster/") {
                         sh """
                         pwd
                         ls -l
@@ -42,38 +48,39 @@ pipeline {
                 }
             }
         }
-       
-        stage('Validating Terraform'){
-            steps{
-                script{
-                    dir('${WORKSPACE}/jenkins-tf-eks/create_cluster/'){
+
+        stage('Terraform Validate') {
+            steps {
+                script {
+                    dir("${WORKSPACE}/jenkins-tf-eks/create_cluster/") {
                         sh """
-                        pwd
                         terraform validate
                         """
                     }
                 }
             }
         }
-        stage('Previewing the infrastructure'){
-            steps{
-                script{
-                    dir('EKS'){
+
+        stage('Previewing the infrastructure') {
+            steps {
+                script {
+                    dir("${WORKSPACE}/jenkins-tf-eks/create_cluster/") {
                         sh """
-                         terraform plan
-                         terraform show -no-color tfplan > tfplan.txt
-                         """
+                        terraform plan -out=tfplan
+                        terraform show -no-color tfplan > tfplan.txt
+                        """
                     }
-                    input(message: "Are you sure to proceed?", ok: "proceed")
+                    input(message: "Are you sure to proceed?", ok: "Proceed")
                 }
             }
         }
-        stage('Creating/Destroying an EKS cluster'){
-            steps{
-                script{
-                    dir('EKS'){
+
+        stage('Creating/Destroying an EKS cluster') {
+            steps {
+                script {
+                    dir("${WORKSPACE}/jenkins-tf-eks/create_cluster/") {
                         sh """
-                        terraform $action --auto-approve -var "cluster_name=${cluster_name}" -var "region=${region}"
+                        terraform ${action} --auto-approve -var "cluster_name=${cluster_name}" -var "region=${region}"
                         """
                     }
                 }
