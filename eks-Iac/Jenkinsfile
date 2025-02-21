@@ -29,13 +29,20 @@ pipeline {
             }
         }
 
-       stage('Terraform init') {
-            steps {
-                sh """
-                    terraform init
-                """
+        stage('Validating Terraform'){
+            steps{
+                script{
+                    dir('${WORKSPACE}/jenkins-tf-eks/create_cluster/'){
+                        sh """
+                        pwd
+                        ls -l
+                        terraform init
+                        """
+                    }
+                }
             }
         }
+       
         stage('Validating Terraform'){
             steps{
                 script{
