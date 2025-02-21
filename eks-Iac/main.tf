@@ -26,7 +26,7 @@ module "eks" {
   eks_managed_node_groups = {
     "${var.cluster_name}-ng" = {
       ami_type       = "AL2023_x86_64_STANDARD"
-      instance_types = ["t3.medium"]
+      instance_types = ["t2.micro"]
       capacity_type  = "SPOT"
       key_name      = var.key_name
 
@@ -43,7 +43,6 @@ module "eks" {
             iops                  = 3000
             throughput            = 125
             encrypted             = true
-            kms_key_id            = module.kms.key_arn
             delete_on_termination = true
           }
         }
