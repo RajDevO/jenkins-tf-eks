@@ -1,7 +1,6 @@
 variable "region" {
   type        = string
   description = "AWS Region"
-  default     = null
 }
 
 variable "aws_account_id" {
@@ -19,7 +18,6 @@ variable "environment" {
 variable "cluster_name" {
   type        = string
   description = "Name of the EKS cluster"
-  default     = null
 }
 
 variable "vpc_cidr_block" {
