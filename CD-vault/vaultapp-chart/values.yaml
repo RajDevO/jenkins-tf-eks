@@ -37,7 +37,7 @@ serviceAccount:
   annotations:
     vault.hashicorp.com/agent-inject: "true"
     vault.hashicorp.com/agent-inject-status: "update"
-    vault.hashicorp.com/agent-inject-secret-app: "app/secret"
+    vault.hashicorp.com/agent-inject-secret-app: "app/secrets"
     vault.hashicorp.com/role: "vault-role-1"
   name: "vault-sa"
 
@@ -75,4 +75,11 @@ ingress:
   hosts:
     - host: chart-example.local
       paths:
-        - path:
+        - path: 
+
+# This section is for autoscaling settings. Adding default values here will avoid the nil pointer error.
+autoscaling:
+  enabled: true  # Set to 'true' if you want autoscaling enabled
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
