@@ -10,7 +10,3 @@ output "private_subnets" {
 output "intra_subnets" {
   value = module.vpc.intra_subnets
 }
-
-output "kma_key_arn" {
-  value = module.kms.key_arn
-}
