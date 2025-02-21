@@ -1,7 +1,7 @@
 pipeline {
     agent any
 
-    parameters {
+    /*parameters {
         string(name: 'EKS_CLUSTER_NAME', defaultValue: '', description: 'Enter the name of the EKS cluster')
         choice(name: 'REGION', choices: ['us-west-1', 'us-west-2'], description: 'Select the AWS REGION where you want to create EKS Cluster')
         choice(name: 'ACTION', choices: ['Create', 'Destroy'], description: 'Select whether to apply or destroy resources')       
@@ -11,7 +11,7 @@ pipeline {
         cluster_name = "${params.EKS_CLUSTER_NAME}"
         region = "${params.REGION}"
         action = "${params.ACTION.toLowerCase()}"
-    }
+    }*/
 
     stages {   
         stage('Clean Workspace') {
@@ -80,7 +80,7 @@ pipeline {
                 script {
                     dir("${WORKSPACE}/jenkins-tf-eks/eks-Iac/") {
                         sh """
-                        terraform ${action} --auto-approve -var "cluster_name=${cluster_name}" -var "region=${region}"
+                        terraform ${action} --auto-approve
                         """
                     }
                 }
