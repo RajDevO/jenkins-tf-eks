@@ -40,8 +40,6 @@ pipeline {
                 script {
                     dir("${WORKSPACE}/jenkins-tf-eks/eks-Iac/") {
                         sh """
-                        pwd
-                        ls -l
                         terraform init
                         """
                     }
@@ -79,9 +77,22 @@ pipeline {
             steps {
                 script {
                     dir("${WORKSPACE}/jenkins-tf-eks/eks-Iac/") {
-                        sh """
-                        terraform ${action} --auto-approve
-                        """
+                        if ("${action}" == "destroy") {
+                            echo "Generating destroy plan"
+                            sh """
+                            terraform plan -destroy -out=destroy-plan.tfplan
+                            terraform show -no-color destroy-plan.tfplan > destroy-plan.txt
+                            """
+                            input(message: "Are you sure you want to destroy the resources?", ok: "Destroy")
+                            echo "Destroying resources"
+                            sh """
+                            terraform destroy --auto-approve
+                            """
+                        } else {
+                            sh """
+                            terraform apply --auto-approve
+                            """
+                        }
                     }
                 }
             }
