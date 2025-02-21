@@ -26,7 +26,7 @@ module "eks" {
   eks_managed_node_groups = {
     "${var.cluster_name}-ng" = {
       ami_type       = "AL2023_x86_64_STANDARD"
-      instance_types = ["t2.micro"]
+      instance_types = ["t3.xlarge"]
       capacity_type  = "SPOT"
       key_name      = var.key_name
 
