@@ -11,6 +11,11 @@ spec:
   selector:
     matchLabels:
       {{- include "vaultapp-chart.selectorLabels" . | nindent 6 }}
+  strategy:
+  type: {{ .Values.deploymentStrategy.type }}  # RollingUpdate
+  rollingUpdate:
+    maxSurge: {{ .Values.deploymentStrategy.rollingUpdate.maxSurge | default 1 }}
+    maxUnavailable: {{ .Values.deploymentStrategy.rollingUpdate.maxUnavailable | default 1 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -76,8 +81,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-strategy:
-  type: {{ .Values.deploymentStrategy.type }}  # RollingUpdate
-  rollingUpdate:
-    maxSurge: {{ .Values.deploymentStrategy.rollingUpdate.maxSurge | default 1 }}
-    maxUnavailable: {{ .Values.deploymentStrategy.rollingUpdate.maxUnavailable | default 1 }}
