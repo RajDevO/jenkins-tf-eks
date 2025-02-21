@@ -30,16 +30,11 @@ serviceAccount:
   annotations:
         vault.hashicorp.com/agent-inject: "true"
         vault.hashicorp.com/agent-inject-status: "update"
-        vault.hashicorp.com/agent-inject-secret-login: "secret/login"
-        vault.hashicorp.com/agent-inject-template-login: |
-          {{- with secret "secret/login" -}}
-          pattoken={{ .Data.data.pattoken }}
-          {{- end }}
         vault.hashicorp.com/agent-inject-secret-app: "app/secret"
         vault.hashicorp.com/agent-inject-template-app: |
           {{- with secret "app/secret" -}}
-          username={{ .Data.data.username }}
-          password={{ .Data.data.password }}
+          db_user={{ .Data.data.username }}
+          db_pass={{ .Data.data.password }}
           {{- end }}
         vault.hashicorp.com/role: "vault-role"
   name: "vault-sa"
