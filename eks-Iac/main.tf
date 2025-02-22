@@ -6,6 +6,7 @@ module "eks" {
   cluster_version = "1.31"
 
   cluster_endpoint_public_access  = true
+  enable_irsa = true
 
   cluster_addons = {
     coredns                = {}
