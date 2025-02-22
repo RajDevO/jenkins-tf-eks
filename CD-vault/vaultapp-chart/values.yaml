@@ -37,8 +37,13 @@ serviceAccount:
   annotations:
     vault.hashicorp.com/agent-inject: "true"
     vault.hashicorp.com/agent-inject-status: "update"
-    vault.hashicorp.com/agent-inject-secret-app: "app/secrets"
-    vault.hashicorp.com/role: "vault-role-1"
+    vault.hashicorp.com/role: "vault-role"
+    vault.hashicorp.com/agent-inject-secret-app: "secret/helloworld"
+    vault.hashicorp.com/agent-inject-template-my-first-secret: |
+          {{- with secret "secret/helloworld" -}}
+          username={{ .Data.data.username }}
+          password={{ .Data.data.password }}
+          {{- end }}
   name: "vault-sa"
 
 # This is for setting Kubernetes Annotations to a Pod.
