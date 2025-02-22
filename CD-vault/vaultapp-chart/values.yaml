@@ -36,10 +36,10 @@ serviceAccount:
   # Annotations to add to the service account
   annotations:
     vault.hashicorp.com/agent-inject: "true"
-    vault.hashicorp.com/agent-inject-status: "update"
+    #vault.hashicorp.com/agent-inject-status: "update"
     vault.hashicorp.com/role: "vault-role"
-    vault.hashicorp.com/agent-inject-secret-app: "secret/helloworld"
-    vault.hashicorp.com/agent-inject-template-my-first-secret: |
+    vault.hashicorp.com/agent-inject-secret-helloworld: "secret/helloworld"
+    vault.hashicorp.com/agent-inject-template-helloworld: |
           {{- with secret "secret/helloworld" -}}
           username={{ .Data.data.username }}
           password={{ .Data.data.password }}
